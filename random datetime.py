@@ -41,7 +41,7 @@ def random_phone_number():
             number = country_code.get(country) + operator_code.get(operator) + str(random.randint(1000000, 9999999))
             return number
         else:
-            return 'Неверный оператор или страна!'
+            return 'Неверный оператор!'
     else:
         return 'Неверная страна!'
 
