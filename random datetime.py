@@ -25,59 +25,51 @@ def random_phone_number():
     """Функция принимает проверяет значения переменных country и operator введенных пользователем и генерирует
     случайный номер телефона с указаными одами стран(country) и кодами операторов(operator) """
     if country == 'Belarus':
-        if operator == 'Mts_by':
-            number = country_code.get(country) + operator_code.get(operator) + str(random.randint(1000000, 9999999))
-            return number
-        elif operator == 'A1':
-            number = country_code.get(country) + operator_code.get(operator) + str(random.randint(1000000, 9999999))
-            return number
-        elif operator == 'life':
+        if operator == 'Mts_by' or operator == 'A1' or operator == 'life':
             number = country_code.get(country) + operator_code.get(operator) + str(random.randint(1000000, 9999999))
             return number
         else:
-            return 'Неверный оператор или страна!'
+            return 'Неверный оператор'
     if country == 'Russia':
-        if operator == 'Mts_ru':
-            number = country_code.get(country) + operator_code.get(operator) + str(random.randint(1000000, 9999999))
-            return number
-        elif operator == 'Beeline':
-            number = country_code.get(country) + operator_code.get(operator) + str(random.randint(1000000, 9999999))
-            return number
-        elif operator == 'Megafon':
+        if operator == 'Mts_ru' or operator == 'Beeline' or operator == 'Megafon':
             number = country_code.get(country) + operator_code.get(operator) + str(random.randint(1000000, 9999999))
             return number
         else:
-            return 'Неверный оператор или страна!'
+            return 'Неверный оператор!'
     if country == 'Ukraine':
-        if operator == 'Vodafone':
-            number = country_code.get(country) + operator_code.get(operator) + str(random.randint(1000000, 9999999))
-            return number
-        elif operator == 'Kievstar':
-            number = country_code.get(country) + operator_code.get(operator) + str(random.randint(1000000, 9999999))
-            return number
-        elif operator == 'lifecell':
+        if operator == 'Vodafone'or operator == 'Kievstar' or operator == 'lifecell':
             number = country_code.get(country) + operator_code.get(operator) + str(random.randint(1000000, 9999999))
             return number
         else:
             return 'Неверный оператор или страна!'
+    else:
+        return 'Неверная страна!'
+
+def add():
+    for contact in dict_a:
+        if contact in dict_a:
+            contact.setdefault({'Birth':random_date_birth()})
+            contact.setdefault({'Phone':random_phone_number()})
+            return contact
+
 
 
 def request():
     """Функция проверяет наличие человека в словаре dict_a по имени и фамилии"""
-    requesting = input('Введите Имя и Фамилию: ')
-    for i in dict_a:
-        if i == requesting:
-            return dict_a.get(requesting)
-        elif i != requesting:
-            return 'Нет такого человека!'
+    name = input('Введите Имя и Фамилию: ')
+    for contact in dict_a:
+        if contact['Name'] == name:
+            contact.update({'Birth': random_date_birth()})
+            contact.update({'Phone':random_phone_number()})
+            print(contact['Name'], contact['Birth'], contact['Phone'])
 
 
 """Словарь с данными людей"""
-dict_a = {'Станислав Чернявский': {'Дата рождения': random_date_birth(), 'Телефонный номер': random_phone_number()},
-          'Василий Пупкин': {'Дата рождения': random_date_birth(), 'Телефонный номер': random_phone_number()},
-          'Дмитрий Дятлов': {'Дата рождения': random_date_birth(), 'Телефонный номер': random_phone_number()},
-          'Валентин Питонов': {'Дата рождения': random_date_birth(), 'Телефонный номер': random_phone_number()},
-          'Владислав Шарпов': {'Дата рождения': random_date_birth(), 'Телефонный номер': random_phone_number()},
-          }
+dict_a = [{'Name': 'Станислав Чернявский'},
+          {'Name': 'Василий Пупкин'},
+          {'Name': 'Владислав Питонов'},
+          {'Name': 'Андрей Шарпов'},
+          {'Name': 'Станислав Чернявский'},
+          ]
 """Выводим данные человека из словаря dict_a в консоль"""
-print(request())
+request()
