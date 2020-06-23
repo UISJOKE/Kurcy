@@ -51,7 +51,6 @@ s = []
 
 
 def dist(t, *args):
-    print(args)
     for i in args:
         for j in i:
             if j.isdigit():
