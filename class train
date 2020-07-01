@@ -1,0 +1,90 @@
+class Train:
+    PASSINCAR = 20
+
+    def __init__(self, carcount):
+        self.people = 0
+        self.carcount = carcount
+        self.passlimit = self.carcount * self.PASSINCAR
+
+    def start(self):
+        peoplein = int(input('Сколько вошло?: '))
+        if peoplein < 2:
+            print('Не могу отправиться,не хватает машинистов!!!')
+        else:
+            print('Поехали!!!')
+        self.people += peoplein
+        return self.people
+
+    def stop(self):
+        peopleex = int(input('Сколько вышло?'))
+        self.people -= peopleex
+        if self.people < 0:
+            self.people = 0
+        return self.people
+
+    def __str__(self):
+        return f'Passenger in passenger train: {self.people} passlimit: {self.passlimit}'
+
+
+class BagageTrain(Train):
+    PASSINCAR = 2
+    BAGINCAR = 20
+
+    def __init__(self, carcount):
+        super().__init__(carcount)
+        self.baglimit = self.carcount * self.BAGINCAR
+        self.bagage = 0
+        self.passlimit = self.PASSINCAR
+
+    def bagage_in(self):
+        bagage = int(input('Сколько багажа грузим?: '))
+        if self.baglimit - self.bagage < bagage:
+            print('Не хватает места!!!')
+        else:
+            self.bagage += bagage
+            return self.bagage
+
+    def bagage_out(self):
+        bagage = int(input('Сколько багажа выгружаем?: '))
+        self.bagage -= bagage
+        if self.bagage < 0:
+            self.bagage = 0
+        return self.bagage
+
+    def come_in(self):
+        peoplein = int(input('Сколько вошло?: '))
+        if self.passlimit >= peoplein:
+            self.people += peoplein
+            return self.people
+        print('Не хватает места!')
+
+    def __str__(self):
+        return f'Passenger in bagage train: {self.people} {self.bagage}'
+
+
+bagt = BagageTrain(20)
+passt = Train(20)
+while True:
+    # passt.people = 0
+    # passt.start()
+    # print('Человек в составе: ' + str(passt.people))
+    # passt.stop()
+    # print('Человек в составе: ' + str(passt.people))
+    # passt.start()
+    # print('Человек в составе: ' + str(passt.people))
+    # passt.stop()
+    # print('Человек в составе: ' + str(passt.people))
+
+    # Грузовой поезд
+    bagt.people = 0
+    bagt.bagage = 0
+    bagt.come_in()
+    print('Человек в составе: ' + str(bagt.people))
+    bagt.bagage_in()
+    print('Багажа: ' + str(bagt.bagage))
+    bagt.bagage_out()
+    print('Багажа: ' + str(bagt.bagage))
+    bagt.bagage_in()
+    print('Багажа: ' + str(bagt.bagage))
+    bagt.bagage_out()
+    print('Багажа: ' + str(bagt.bagage))
