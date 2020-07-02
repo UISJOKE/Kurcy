@@ -1,3 +1,7 @@
+errors = {1: 'Не хватает места!', 2: 'Не хватает машинстов!', 3: 'Поезд остановлен!'}
+allgood = {1: 'Поехали!!!', 2: 'Багаж загружен!', 3: 'Багаж выгружен!'}
+
+
 class Train:
     PASSINCAR = 20
 
@@ -6,21 +10,20 @@ class Train:
         self.carcount = carcount
         self.passlimit = self.carcount * self.PASSINCAR
 
-    def start(self):
-        peoplein = int(input('Сколько вошло?: '))
-        if peoplein < 2:
-            print('Не могу отправиться,не хватает машинистов!!!')
+    def start(self, pasin):
+        if pasin >= 2:
+            if self.passlimit - self.people < pasin:
+                return errors[1]
+            self.people += pasin
+            return allgood[1]
         else:
-            print('Поехали!!!')
-        self.people += peoplein
-        return self.people
+            return errors[2]
 
-    def stop(self):
-        peopleex = int(input('Сколько вышло?'))
-        self.people -= peopleex
+    def stop(self, pasex):
+        self.people -= pasex
         if self.people < 0:
             self.people = 0
-        return self.people
+        return errors[3]
 
     def __str__(self):
         return f'Passenger in passenger train: {self.people} passlimit: {self.passlimit}'
@@ -36,27 +39,26 @@ class BagageTrain(Train):
         self.bagage = 0
         self.passlimit = self.PASSINCAR
 
-    def bagage_in(self):
-        bagage = int(input('Сколько багажа грузим?: '))
+    def bagage_in(self, bagage):
         if self.baglimit - self.bagage < bagage:
-            print('Не хватает места!!!')
+            return errors[1]
         else:
             self.bagage += bagage
-            return self.bagage
+            return allgood[2]
 
-    def bagage_out(self):
-        bagage = int(input('Сколько багажа выгружаем?: '))
+    def bagage_out(self, bagage):
         self.bagage -= bagage
         if self.bagage < 0:
             self.bagage = 0
-        return self.bagage
+        return allgood[3]
 
-    def come_in(self):
-        peoplein = int(input('Сколько вошло?: '))
-        if self.passlimit >= peoplein:
-            self.people += peoplein
-            return self.people
-        print('Не хватает места!')
+    def come_in(self, bagage):
+        if self.passlimit >= bagage:
+            self.people += bagage
+            if self.people >= 2:
+                return allgood[1]
+            return errors[2]
+        return errors[1]
 
     def __str__(self):
         return f'Passenger in bagage train: {self.people} {self.bagage}'
@@ -65,26 +67,30 @@ class BagageTrain(Train):
 bagt = BagageTrain(20)
 passt = Train(20)
 while True:
+    # пассажирский
     # passt.people = 0
-    # passt.start()
+    # paspeoplein = int(input('Сколько вошло?: '))
+    # print(passt.start(paspeoplein))
     # print('Человек в составе: ' + str(passt.people))
-    # passt.stop()
+    # paspeopleex = int(input('Сколько вышло?'))
+    # print(passt.stop(paspeopleex))
     # print('Человек в составе: ' + str(passt.people))
-    # passt.start()
+    # paspeoplein = int(input('Сколько вошло?: '))
+    # print(passt.start(paspeoplein))
     # print('Человек в составе: ' + str(passt.people))
-    # passt.stop()
+    # paspeopleex = int(input('Сколько вышло?'))
+    # print(passt.stop(paspeopleex))
     # print('Человек в составе: ' + str(passt.people))
 
     # Грузовой поезд
     bagt.people = 0
     bagt.bagage = 0
-    bagt.come_in()
+    bagpeoplein = int(input('Сколько вошло?: '))
+    print(bagt.come_in(bagpeoplein))
     print('Человек в составе: ' + str(bagt.people))
-    bagt.bagage_in()
+    bagagein = int(input('Сколько багажа грузим?: '))
+    print(bagt.bagage_in(bagagein))
     print('Багажа: ' + str(bagt.bagage))
-    bagt.bagage_out()
-    print('Багажа: ' + str(bagt.bagage))
-    bagt.bagage_in()
-    print('Багажа: ' + str(bagt.bagage))
-    bagt.bagage_out()
+    bagageout = int(input('Сколько багажа выгружаем?: '))
+    print(bagt.bagage_out(bagageout))
     print('Багажа: ' + str(bagt.bagage))
