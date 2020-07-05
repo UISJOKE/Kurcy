@@ -51,7 +51,7 @@ class Order:
 car = Car('mazda', '7601BM-7', 'sedan', 4)
 car1 = Car('volkswagen', '8614KT-6', 'sedan', 4)
 drive = Driver('Vasiliy', 41, car)
-drive1 = Driver('Kesha', 145,car1)
+drive1 = Driver('Kesha', 145, car1)
 user = User('Yasha', 150)
 order = Order(drive1, 1000)
 order1 = Order(drive, 167)
