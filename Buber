@@ -30,24 +30,30 @@ class Car:
 
 
 class Order:
-    PRICEFORKM = 2
-    SPEED = 60
+    PRICEFORKM = 0.6
+    SPEED = 40
 
-    def __init__(self, driver, distance, point):
+    def __init__(self, driver, point):
         self.driver = driver
-        self.distance = distance
+        self.distance = user.location - driver.location
         self.point = point
-        self.price = int(self.distance * self.PRICEFORKM)
+        self.price = int((self.point - driver.location) * self.PRICEFORKM)
         self.arrivaltime = int((self.distance / self.SPEED) * 60)
         self.timetravel = int(((self.point - self.distance) // self.SPEED) * 60)
+        self.distancetravel = self.point - driver.location
 
     def __str__(self):
         return f'{self.driver}\nEnd point: {self.point}\nPrice: {self.price}р.\n' \
-               f'Arivval car time: {self.arrivaltime} min.\nTravel Time: {self.timetravel} min.'
+               f'Arivval car time: {self.arrivaltime} min.\nTravel Time: {self.timetravel} min.\n' \
+               f'Travel Distance: {self.distancetravel} km.\n '
 
 
 car = Car('mazda', '7601BM-7', 'sedan', 4)
+car1 = Car('volkswagen', '8614KT-6', 'sedan', 4)
 drive = Driver('Vasiliy', 41, car)
+drive1 = Driver('Kesha', 145,car1)
 user = User('Yasha', 150)
-order = Order(drive, user.location - drive.location, 1000)
+order = Order(drive1, 1000)
+order1 = Order(drive, 167)
 print(order)
+print(order1)
