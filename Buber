@@ -1,0 +1,53 @@
+class User:
+    def __init__(self, name, location):
+        self.name = name
+        self.location = location
+
+
+class Admin(User):
+    def __init__(self, name, location):
+        super().__init__(name, location)
+
+
+class Driver(User):
+    def __init__(self, name, location, auto):
+        super().__init__(name, location)
+        self.car = auto
+
+    def __str__(self):
+        return f'Name: {self.name}\nLocation: {self.location}\n{self.car}'
+
+
+class Car:
+    def __init__(self, model, number, car_tupe, seats):
+        self.model = model
+        self.number = number
+        self.type = car_tupe
+        self.seats = seats
+
+    def __str__(self):
+        return f'Model: {self.model}\nNumber: {self.number}\nType: {self.type}\nSeats: {self.seats}'
+
+
+class Order:
+    PRICEFORKM = 2
+    SPEED = 60
+
+    def __init__(self, driver, distance, point):
+        self.driver = driver
+        self.distance = distance
+        self.point = point
+        self.price = int(self.distance * self.PRICEFORKM)
+        self.arrivaltime = int((self.distance / self.SPEED) * 60)
+        self.timetravel = int(((self.point - self.distance) // self.SPEED) * 60)
+
+    def __str__(self):
+        return f'{self.driver}\nEnd point: {self.point}\nPrice: {self.price}р.\n' \
+               f'Arivval car time: {self.arrivaltime} min.\nTravel Time: {self.timetravel} min.'
+
+
+car = Car('mazda', '7601BM-7', 'sedan', 4)
+drive = Driver('Vasiliy', 41, car)
+user = User('Yasha', 150)
+order = Order(drive, user.location - drive.location, 1000)
+print(order)
