@@ -5,14 +5,15 @@ drivers = {55555: {'Name': 'Murat', 'Location': randint(1, 150), 'E-mail': 'Mura
                    'Model': 'Mazda', 'Number': '5467BE-7', 'Type': 'Sedan',
                    'Seats': 4}}
 users = {}
+orders = {}
+my_user_online = {}
 admins = {11111: {'E-mail': 'thedeadtwitch@gmail.com', 'Password': 'admin'}}
 
 
 class User:
-    def __init__(self, user_name, bonus):
+    def __init__(self, user_name):
         self.name = user_name
         self.location = randint(1, 150)
-        self.bonus = bonus
 
     @staticmethod
     def login(user_email, user_password):
@@ -67,23 +68,23 @@ class Driver:
         return f'Name: {self.name}\nLocation: {self.location}\n{self.car}'
 
 
-# class Order:
-#     PRICEFORKM = 0.6
-#     SPEED = 40
-#
-#     def __init__(self, driver, point):
-#         self.driver = driver
-#         self.distance = user.location - driver.location
-#         self.point = point
-#         self.price = int((self.point - driver.location) * self.PRICEFORKM)
-#         self.arrivaltime = int((self.distance / self.SPEED) * 60)
-#         self.timetravel = int(((self.point - self.distance) // self.SPEED) * 60)
-#         self.distancetravel = self.point - driver.location
-#
-#     def __str__(self):
-#         return f'{self.driver}\nEnd point: {self.point}\nPrice: {self.price}р.\n' \
-#                f'Arivval car time: {self.arrivaltime} min.\nTravel Time: {self.timetravel} min.\n' \
-#                f'Travel Distance: {self.distancetravel} km.\n '
+class Order:
+    PRICEFORKM = 0.6
+    SPEED = 40
+
+    def __init__(self, end_point):
+        self.driver = drivers[choice]
+        self.distance = my_user_online['Location'] - drivers[choice]['Location']
+        self.point = end_point
+        self.price = int((self.point - drivers[choice]['Location']) * self.PRICEFORKM)
+        self.arrivaltime = int((self.distance / self.SPEED) * 60)
+        self.timetravel = int(((self.point - self.distance) // self.SPEED) * 60)
+        self.distancetravel = self.point - drivers[choice]['Location']
+
+    def __str__(self):
+        return f'{self.driver}\nEnd point: {self.point}\nPrice: {self.price}р.\n' \
+               f'Arivval car time: {self.arrivaltime} min.\nTravel Time: {self.timetravel} min.\n' \
+               f'Travel Distance: {self.distancetravel} km.\n '
 
 
 while True:
@@ -129,8 +130,19 @@ while True:
                 password = input('Input password: ')
                 if password in user['Password']:
                     print('Hello, ' + user['Name'])
+                    my_user_online.update(user)
                 else:
                     print(errors[1])
+                request = int(input('''1 - Make order
+                '''))
+                if request == 1:
+                    print(drivers)
+                    choice = int(input('Input driver id: '))
+                    point = int(input('Point: '))
+                    order = Order(point)
+                    order_id = randint(1000, 9999)
+                    orders.update({order_id: {order}})
+                    print(order)
     elif request == 5:
         email = input('Input E-mail: ')
         signal = True
