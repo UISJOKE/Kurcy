@@ -1,155 +1,145 @@
-from random import randint
+from random import randint, choice
 
-errors = {1: 'invalid login or password'}
-drivers = {55555: {'Name': 'Murat', 'Location': randint(1, 150), 'E-mail': 'Murat334@gmail.com', 'Password': '12345',
-                   'Model': 'Mazda', 'Number': '5467BE-7', 'Type': 'Sedan',
-                   'Seats': 4}}
-users = {}
-orders = {}
-my_user_online = {}
-admins = {11111: {'E-mail': 'thedeadtwitch@gmail.com', 'Password': 'admin'}}
+users = []
+drivers = []
+cars = []
+current_user = None
 
 
-class User:
-    def __init__(self, user_name):
-        self.name = user_name
-        self.location = randint(1, 150)
+class BaseUser:
+    def __init__(self, name, email, password):
+        self.name = name
+        self.email = email
+        self.password = password
 
     @staticmethod
-    def login(user_email, user_password):
-        for myuser in users.values():
-            if myuser['E-mail'] == user_email and myuser['Password'] == user_password:
-                return 'Hello, ' + myuser['Name']
-            return errors[1]
-
-    @staticmethod
-    def registration(user_email, user_name, user_password, user_location):
-        user_id = randint(10000, 99999)
-        if user_id not in drivers.keys():
-            users.update({user_id: {'Name': user_name, 'E-mail': user_email, 'Password': user_password,
-                                    'Location': user_location}})
+    def get_location():
+        location = randint(1, 150)
+        return location
 
 
-class Admin:
-    def __init__(self, admin_name):
-        super().__init__(admin_name)
-
-    @staticmethod
-    def login(admin_email, admin_password):
-        for myadmin in admins.values():
-            if myadmin['E-mail'] == admin_email and myadmin['Password'] == admin_password:
-                return 'Hello, ' + myadmin['Name']
-            return errors[1]
+class User(BaseUser):
+    pass
 
 
-class Driver:
-    def __init__(self, driver_name, driver_location, auto):
-        self.name = driver_name
-        self.location = driver_location
-        self.car = auto
+class Driver(BaseUser):
+    pass
 
-    @staticmethod
-    def login(driver_email, driver_password):
-        for myuser in drivers.values():
-            if myuser['E-mail'] == driver_email and myuser['Password'] == driver_password:
-                return 'Hello, ' + myuser['Name']
-            return errors[1]
 
-    @staticmethod
-    def registration(driver_email, driver_name, driver_password, driver_model_car, driver_car_number, driver_type_car,
-                     driver_seats_in_car):
-        user_id = randint(10000, 99999)
-        if user_id not in drivers.keys():
-            drivers.update({user_id: {'Name': driver_name, 'E-mail': driver_email, 'Password': driver_password,
-                                      'Model': driver_model_car, 'Number': driver_car_number, 'Type': driver_type_car,
-                                      'Seats': driver_seats_in_car}})
-
-    def __str__(self):
-        return f'Name: {self.name}\nLocation: {self.location}\n{self.car}'
+class Car:
+    def __init__(self, model, number, colour, seat):
+        self.model = model
+        self.number = number
+        self.colour = colour
+        self.seat = seat
 
 
 class Order:
     PRICEFORKM = 0.6
-    SPEED = 40
+    SPEED = 75
 
-    def __init__(self, end_point):
-        self.driver = drivers[choice]
-        self.distance = my_user_online['Location'] - drivers[choice]['Location']
-        self.point = end_point
-        self.price = int((self.point - drivers[choice]['Location']) * self.PRICEFORKM)
-        self.arrivaltime = int((self.distance / self.SPEED) * 60)
-        self.timetravel = int(((self.point - self.distance) // self.SPEED) * 60)
-        self.distancetravel = self.point - drivers[choice]['Location']
+    def __init__(self, driver, user, point):
+        user_loc = User.get_location()
+        driver_loc = Driver.get_location()
+        self.point = point
+        self.wait = int(abs(((user_loc - driver_loc) / self.SPEED) * 60))
+        self.driver = driver
+        self.user = user
+        self.price = self.point * self.PRICEFORKM
 
     def __str__(self):
-        return f'{self.driver}\nEnd point: {self.point}\nPrice: {self.price}р.\n' \
-               f'Arivval car time: {self.arrivaltime} min.\nTravel Time: {self.timetravel} min.\n' \
-               f'Travel Distance: {self.distancetravel} km.\n '
+        return f'User: {self.user}\nDriver: {self.driver}\nWaypoint: {self.point}км.\nCar waiting: {self.wait}мин.\n' \
+               f'Price: {int(self.price)}р. '
+
+
+def signup(name, email, password, user_type):
+    global current_user
+    if user_type == 'user':
+        user = User(name, email, password)
+        users.append(user)
+    elif user_type == 'driver':
+        user = Driver(name, email, password)
+        drivers.append(users)
+    else:
+        return 'Wrong user type!'
+    current_user = user
+    return 'You has been signed up!'
+
+
+def login(email, password):
+    global current_user
+    for user in users:
+        if user.email == email:
+            if user.password == password:
+                current_user = user
+                return 'Hello, ' + user.name + '!'
+            else:
+                return 'Wrong password!'
+    return 'Wrong e-mail or password!'
+
+
+def add_car(model, number, colour, seat):
+    car = Car(model, number, colour, seat)
+    cars.append(car)
+    return 'Car has been add!'
+
+
+def dell_car(number):
+    for car in cars:
+        if car.number == number:
+            cars.remove(car)
+            return 'Car has been removed!'
+    return 'Wrong car number!'
 
 
 while True:
-    request = int(input('''1 - Driver registration
+    request = int(input('''1 - Driver signup
 2 - Login as driver
-3 - User registration
+3 - User signup
 4 - Login as user
-5 - Login as admin
-6 - Make order
+5 - add car
+6 - delete car
+7 - make order
 '''))
-    if request == 1:
-        email = input('Input E-mail: ')
-        name = input('Input name: ')
-        password = input('Input password: ')
-        model_car = input('Input model car: ')
-        car_number = input('Input car number: ')
-        type_car = input('Input car type: ')
-        seats_in_car = int(input('Input car count of seats: '))
-        Driver.registration(email, name, password, model_car, car_number, type_car, seats_in_car)
-        print('Регистрация завершена!')
-    elif request == 2:
-        email = input('Input E-mail: ')
-        signal = True
-        for user in drivers.values():
-            if email in user['E-mail']:
-                password = input('Input password: ')
-                if password in user['Password']:
-                    print('Hello, ' + user['Name'])
-                else:
-                    print(errors[1])
-    elif request == 3:
-        email = input('Input E-mail: ')
-        name = input('Input name: ')
-        password = input('Input password: ')
-        location = randint(1, 150)
-        User.registration(email, name, password, location)
-        print('Регистрация завершена!')
-    elif request == 4:
-        email = input('Input E-mail: ')
-        signal = True
-        for user in users.values():
-            if email in user['E-mail']:
-                password = input('Input password: ')
-                if password in user['Password']:
-                    print('Hello, ' + user['Name'])
-                    my_user_online.update(user)
-                else:
-                    print(errors[1])
-                request = int(input('''1 - Make order
-                '''))
-                if request == 1:
-                    print(drivers)
-                    choice = int(input('Input driver id: '))
-                    point = int(input('Point: '))
-                    order = Order(point)
-                    order_id = randint(1000, 9999)
-                    orders.update({order_id: {order}})
-                    print(order)
-    elif request == 5:
-        email = input('Input E-mail: ')
-        signal = True
-        for admin in admins.values():
-            if email in admin['E-mail']:
-                password = input('Input password: ')
-                if password in admin['Password']:
-                    print('Hello, Admin')
-                else:
-                    print(errors[1])
+    if request is 1:
+        driver_name = input("Input You'r name: ")
+        driver_email = input("Input You'r e-mail: ")
+        driver_password = input("Input password: ")
+        driver_signup = signup(driver_name, driver_email, driver_password, 'driver')
+        print(driver_signup)
+        print(User.get_location())
+    elif request is 2:
+        driver_email = input("Input You'r e-mail: ")
+        driver_password = input("Input password: ")
+        driver_login = login(driver_email, driver_password)
+        print(driver_login)
+    elif request is 3:
+        user_name = input("Input You'r name: ")
+        user_email = input("Input You'r e-mail: ")
+        user_password = input("Input password: ")
+        user_signup = signup(user_name, user_email, user_password, 'user')
+        print(user_signup)
+    elif request is 4:
+        user_email = input("Input You'r e-mail: ")
+        user_password = input("Input password: ")
+        user_login = login(user_email, user_password)
+        print(user_login)
+    elif request is 5:
+        car_model = input('Input model: ')
+        car_number = input('Input number(xxxxAA-x): ')
+        car_colour = input('Input colour: ')
+        car_seat = int(input('Input count of seats: '))
+        car_add = add_car(car_model, car_number, car_colour, car_seat)
+        print(car_add)
+        print(cars)
+    elif request is 6:
+        car_number = input('Input number(xxxxAA-x): ')
+        car_del = dell_car(car_number)
+        print(car_del)
+        print(cars)
+    elif request is 7:
+        driver = choice(drivers)
+        user = current_user
+        point = int(input('Input waypoint: '))
+        order = Order(driver, user, point)
+        print(order)
