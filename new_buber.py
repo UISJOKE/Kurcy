@@ -1,3 +1,5 @@
+from random import randint, choice
+
 users = []
 drivers = []
 cars = []
@@ -10,13 +12,47 @@ class BaseUser:
         self.email = email
         self.password = password
 
+    @staticmethod
+    def get_location():
+        location = randint(1, 150)
+        return location
+
+    def __str__(self):
+        return f'{self.name}'
 
 class User(BaseUser):
     pass
 
 
 class Driver(BaseUser):
-    pass
+    def __str__(self):
+        return f'{self.name}'
+
+
+class Car:
+    def __init__(self, model, number, colour, seat):
+        self.model = model
+        self.number = number
+        self.colour = colour
+        self.seat = seat
+
+
+class Order:
+    PRICEFORKM = 0.6
+    SPEED = 75
+
+    def __init__(self, driver, user, point):
+        user_loc = User.get_location()
+        driver_loc = Driver.get_location()
+        self.point = point
+        self.wait = int(abs(((user_loc - driver_loc) / self.SPEED) * 60))
+        self.driver = driver
+        self.user = user
+        self.price = self.point * self.PRICEFORKM
+
+    def __str__(self):
+        return f'User: {self.user}\nDriver: {self.driver}\nWaypoint: {self.point}км.\nCar waiting: {self.wait}мин.\n' \
+               f'Price: {int(self.price)}р. '
 
 
 def signup(name, email, password, user_type):
@@ -45,14 +81,6 @@ def login(email, password):
     return 'Wrong e-mail or password!'
 
 
-class Car:
-    def __init__(self, model, number, colour, seat):
-        self.model = model
-        self.number = number
-        self.colour = colour
-        self.seat = seat
-
-
 def add_car(model, number, colour, seat):
     car = Car(model, number, colour, seat)
     cars.append(car)
@@ -74,6 +102,7 @@ while True:
 4 - Login as user
 5 - add car
 6 - delete car
+7 - make order
 '''))
     if request is 1:
         driver_name = input("Input You'r name: ")
@@ -81,6 +110,7 @@ while True:
         driver_password = input("Input password: ")
         driver_signup = signup(driver_name, driver_email, driver_password, 'driver')
         print(driver_signup)
+        print(User.get_location())
     elif request is 2:
         driver_email = input("Input You'r e-mail: ")
         driver_password = input("Input password: ")
@@ -110,3 +140,9 @@ while True:
         car_del = dell_car(car_number)
         print(car_del)
         print(cars)
+    elif request is 7:
+        driver = choice(drivers)
+        user = current_user
+        point = int(input('Input waypoint: '))
+        order = Order(driver, user, point)
+        print(order)
